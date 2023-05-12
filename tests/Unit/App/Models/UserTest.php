@@ -9,37 +9,29 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use PHPUnit\Framework\TestCase;
 
-class UserTest extends TestCase
+class UserTest extends ModelTestCase
 {
     protected function model(): Model
     {
         return new User();
     }
 
-    public function test_traits(): void
+    protected function traits(): array
     {
-        $expectedTraits = [
+        return [
             HasApiTokens::class,
             HasFactory::class,
             Notifiable::class,
         ];
-
-        $traits = array_keys(class_uses($this->model()));
-
-        $this->assertEquals($expectedTraits, $traits);
     }
 
-    public function test_fillable(): void
+    protected function fillable(): array
     {
-        $expectedFillable = [
+        return [
             'name',
             'email',
             'password',
         ];
-
-        $fillable = $this->model()->getFillable();
-
-        $this->assertEquals($expectedFillable, $fillable);
     }
 
     public function test_incrementing_is_false(): void
@@ -47,27 +39,19 @@ class UserTest extends TestCase
         $this->assertFalse($this->model()->incrementing);
     }
 
-    public function test_has_casts(): void
+    protected function casts(): array
     {
-        $expectedCasts = [
+        return [
             'id' => 'string',
             'email_verified_at' => 'datetime',
         ];
-
-        $casts = $this->model()->getCasts();
-
-        $this->assertEquals($expectedCasts, $casts);
     }
 
-    public function test_has_hidden(): void
+    protected function hidden(): array
     {
-        $expectedHiddenFields = [
+        return [
             'password',
             'remember_token',
         ];
-
-        $hiddenFields = $this->model()->getHidden();
-
-        $this->assertEquals($expectedHiddenFields, $hiddenFields);
     }
 }
