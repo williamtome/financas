@@ -43,7 +43,7 @@ class UserRepositoryTest extends TestCase
         $this->assertCount(10, $response);
     }
 
-    public function test_create()
+    public function test_create(): void
     {
         $data = [
             'name' => 'William Tomé',
@@ -60,7 +60,7 @@ class UserRepositoryTest extends TestCase
         ]);
     }
 
-    public function test_throw_exception()
+    public function test_throw_exception(): void
     {
         $this->expectException(QueryException::class);
 
