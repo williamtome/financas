@@ -27,7 +27,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function update(string $email, array $data): object
     {
-        $user = $this->model->where('email', $email)->first();
+        $user = $this->find($email);
 
         $user->update($data);
         $user->refresh();
@@ -40,12 +40,15 @@ class UserRepository implements UserRepositoryInterface
      */
     public function delete(string $email): bool
     {
-        $user = $this->model->where('email', $email)->first();
-
-        if (!$user) {
+        if (!$user = $this->find($email)) {
             throw new NotFoundException('User not found');
         }
 
         return $user->delete();
+    }
+
+    public function find(string $email): ?object
+    {
+        return $this->model->where('email', $email)->first();
     }
 }

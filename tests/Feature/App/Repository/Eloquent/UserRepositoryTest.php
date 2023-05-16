@@ -106,4 +106,20 @@ class UserRepositoryTest extends TestCase
         $this->expectException(NotFoundException::class);
         $this->repository->delete('fake_email');
     }
+
+    public function test_find(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->repository->find($user->email);
+
+        $this->assertIsObject($response);
+    }
+
+    public function test_find_not_found(): void
+    {
+        $response = $this->repository->find('fake_email');
+
+        $this->assertNull($response);
+    }
 }
