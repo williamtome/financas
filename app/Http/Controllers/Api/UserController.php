@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\UserResource;
 use App\Repository\Contracts\UserRepositoryInterface;
 use App\Repository\Eloquent\UserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends Controller
 {
@@ -16,8 +18,10 @@ class UserController extends Controller
         $this->repository = $repository;
     }
 
-    public function index(): array
+    public function index(): AnonymousResourceCollection
     {
-        return $this->repository->findAll();
+        $users = $this->repository->paginate();
+
+        return UserResource::collection($users);
     }
 }
