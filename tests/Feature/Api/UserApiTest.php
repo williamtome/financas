@@ -56,6 +56,13 @@ class UserApiTest extends TestCase
                 'first_page',
                 'last_page',
                 'per_page',
+            ],
+            'data' => [
+                '*' => [
+                    'id',
+                    'name',
+                    'email',
+                ]
             ]
         ]);
     }
