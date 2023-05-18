@@ -5,6 +5,7 @@ namespace Tests\Feature\Api;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class UserApiTest extends TestCase
@@ -22,6 +23,20 @@ class UserApiTest extends TestCase
         $response->assertJsonFragment(['total' => 40]);
         $response->assertJsonFragment(['current_page' => 1]);
         $response->assertJsonStructure($this->structure());
+    }
+
+    /**
+     * @dataProvider dataProviderCreateUser
+     */
+    public function test_create(
+        array $payload,
+        int $statusCode,
+        array $structure
+    ): void {
+        $response = $this->postJson($this->endpoint, $payload);
+
+        $response->assertStatus($statusCode);
+        $response->assertJsonStructure($structure);
     }
 
     /**
@@ -43,37 +58,6 @@ class UserApiTest extends TestCase
         $response->assertJsonStructure($this->structure());
     }
 
-    public function test_create(): void
-    {
-        $payload = [
-            'name' => 'william',
-            'email' => 'william@teste.com',
-            'password' => '123abc456def789'
-        ];
-
-        $response = $this->postJson($this->endpoint, $payload);
-        $response->assertCreated();
-        $response->assertJsonStructure([
-            'data' => [
-                'id',
-                'name',
-                'email',
-            ]
-        ]);
-    }
-
-    /**
-     * @dataProvider payloadsToValidate
-     */
-    public function test_create_validations(
-        string $name,
-        string $email = null,
-        string $password = null
-    ): void {
-        $response = $this->postJson($this->endpoint, [$name, $email, $password]);
-        $response->assertUnprocessable();
-    }
-
     public static function dataProviderPagination(): array
     {
         return [
@@ -86,14 +70,36 @@ class UserApiTest extends TestCase
         ];
     }
 
-    public function payloadsToValidate(): array
+    public static function dataProviderCreateUser(): array
     {
         return [
-            'empty name' => ['name' => ''],
-            'empty e-mail' => ['name' => 'William', 'email' => ''],
-            'e-mail incorrect' => ['name' => 'William', 'email' => 'abc@test'],
-            'test min characters' => ['name' => 'William', 'email' => 'abc@test.com', 'password' => '123'],
-            'test max characters' => ['name' => 'William', 'email' => 'william@test.com', 'password' => '123abc456def789g'],
+            'test created user' => [
+                'payload' => [
+                    'name' => 'William',
+                    'email' => 'william@teste.com',
+                    'password' => '123abc45',
+                ],
+                'statusCode' => Response::HTTP_CREATED,
+                'structure' => [
+                    'data' => [
+                        'id',
+                        'name',
+                        'email',
+                    ]
+                ],
+            ],
+            'test validation' => [
+                'payload' => [],
+                'statusCode' => Response::HTTP_UNPROCESSABLE_ENTITY,
+                'structure' => [
+                    'message',
+                    'errors' => [
+                        'name',
+                        'email',
+                        'password',
+                    ],
+                ],
+            ],
         ];
     }
 
