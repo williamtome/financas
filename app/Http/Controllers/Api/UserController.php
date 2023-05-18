@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
 use App\Http\Resources\Api\UserResource;
-use App\Models\User;
 use App\Repository\Contracts\UserRepositoryInterface;
 use App\Repository\Eloquent\UserRepository;
 use Illuminate\Http\Request;
@@ -35,7 +35,7 @@ class UserController extends Controller
             ]);
     }
 
-    public function store(Request $request): object
+    public function store(UserRequest $request): object
     {
         $user = $this->repository->create($request->all());
 
