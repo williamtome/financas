@@ -43,6 +43,25 @@ class UserApiTest extends TestCase
         $response->assertJsonStructure($this->structure());
     }
 
+    public function test_create()
+    {
+        $payload = [
+            'name' => 'william',
+            'email' => 'william@teste.com',
+            'password' => '12345678'
+        ];
+
+        $response = $this->postJson($this->endpoint, $payload);
+        $response->assertCreated();
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+                'email',
+            ]
+        ]);
+    }
+
     public static function dataProviderPagination(): array
     {
         return [
