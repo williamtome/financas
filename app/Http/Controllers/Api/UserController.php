@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\UserResource;
+use App\Models\User;
 use App\Repository\Contracts\UserRepositoryInterface;
 use App\Repository\Eloquent\UserRepository;
 use Illuminate\Http\Request;
@@ -32,5 +33,12 @@ class UserController extends Controller
                     'per_page' => $response->perPage(),
                 ]
             ]);
+    }
+
+    public function store(Request $request): object
+    {
+        $user = $this->repository->create($request->all());
+
+        return new UserResource($user);
     }
 }
