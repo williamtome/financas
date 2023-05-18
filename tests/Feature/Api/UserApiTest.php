@@ -43,12 +43,12 @@ class UserApiTest extends TestCase
         $response->assertJsonStructure($this->structure());
     }
 
-    public function test_create()
+    public function test_create(): void
     {
         $payload = [
             'name' => 'william',
             'email' => 'william@teste.com',
-            'password' => '12345678'
+            'password' => '123abc456def789'
         ];
 
         $response = $this->postJson($this->endpoint, $payload);
@@ -62,6 +62,18 @@ class UserApiTest extends TestCase
         ]);
     }
 
+    /**
+     * @dataProvider payloadsToValidate
+     */
+    public function test_create_validations(
+        string $name,
+        string $email = null,
+        string $password = null
+    ): void {
+        $response = $this->postJson($this->endpoint, [$name, $email, $password]);
+        $response->assertUnprocessable();
+    }
+
     public static function dataProviderPagination(): array
     {
         return [
@@ -71,6 +83,17 @@ class UserApiTest extends TestCase
             '20 users page 1' => ['total' => 20, 'page' => 1, 'totalPage' => 15],
             '20 users page 2' => ['total' => 20, 'page' => 2, 'totalPage' => 5],
             'no users' => ['total' => 0, 'page' => 1, 'totalPage' => 0],
+        ];
+    }
+
+    public function payloadsToValidate(): array
+    {
+        return [
+            'empty name' => ['name' => ''],
+            'empty e-mail' => ['name' => 'William', 'email' => ''],
+            'e-mail incorrect' => ['name' => 'William', 'email' => 'abc@test'],
+            'test min characters' => ['name' => 'William', 'email' => 'abc@test.com', 'password' => '123'],
+            'test max characters' => ['name' => 'William', 'email' => 'william@test.com', 'password' => '123abc456def789g'],
         ];
     }
 
