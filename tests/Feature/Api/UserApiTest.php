@@ -5,7 +5,6 @@ namespace Tests\Feature\Api;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class UserApiTest extends TestCase
@@ -22,15 +21,7 @@ class UserApiTest extends TestCase
         $response->assertJsonCount(15, 'data');
         $response->assertJsonFragment(['total' => 40]);
         $response->assertJsonFragment(['current_page' => 1]);
-        $response->assertJsonStructure([
-            'meta' => [
-                'total',
-                'current_page',
-                'first_page',
-                'last_page',
-                'per_page',
-            ]
-        ]);
+        $response->assertJsonStructure($this->structure());
     }
 
     /**
@@ -49,7 +40,24 @@ class UserApiTest extends TestCase
         $response->assertJsonCount($totalPage, 'data');
         $response->assertJsonFragment(['total' => $total]);
         $response->assertJsonFragment(['current_page' => $page]);
-        $response->assertJsonStructure([
+        $response->assertJsonStructure($this->structure());
+    }
+
+    public static function dataProviderPagination(): array
+    {
+        return [
+            '40 users page 1' => ['total' => 40, 'page' => 1, 'totalPage' => 15],
+            '40 users page 2' => ['total' => 40, 'page' => 2, 'totalPage' => 15],
+            '40 users page 3' => ['total' => 40, 'page' => 3, 'totalPage' => 10],
+            '20 users page 1' => ['total' => 20, 'page' => 1, 'totalPage' => 15],
+            '20 users page 2' => ['total' => 20, 'page' => 2, 'totalPage' => 5],
+            'no users' => ['total' => 0, 'page' => 1, 'totalPage' => 0],
+        ];
+    }
+
+    protected function structure(): array
+    {
+        return [
             'meta' => [
                 'total',
                 'current_page',
@@ -64,18 +72,6 @@ class UserApiTest extends TestCase
                     'email',
                 ]
             ]
-        ]);
-    }
-
-    public static function dataProviderPagination(): array
-    {
-        return [
-            '40 users page 1' => ['total' => 40, 'page' => 1, 'totalPage' => 15],
-            '40 users page 2' => ['total' => 40, 'page' => 2, 'totalPage' => 15],
-            '40 users page 3' => ['total' => 40, 'page' => 3, 'totalPage' => 10],
-            '20 users page 1' => ['total' => 20, 'page' => 1, 'totalPage' => 15],
-            '20 users page 2' => ['total' => 20, 'page' => 2, 'totalPage' => 5],
-            'no users' => ['total' => 0, 'page' => 1, 'totalPage' => 0],
         ];
     }
 }
