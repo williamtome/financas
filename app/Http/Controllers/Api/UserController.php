@@ -35,6 +35,13 @@ class UserController extends Controller
             ]);
     }
 
+    public function show(string $email)
+    {
+        $user = $this->repository->find($email);
+
+        return new UserResource($user);
+    }
+
     public function store(UserRequest $request): object
     {
         $user = $this->repository->create($request->all());
