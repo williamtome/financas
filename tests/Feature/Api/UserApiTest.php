@@ -74,6 +74,28 @@ class UserApiTest extends TestCase
         ]);
     }
 
+    public function test_not_found(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->getJson("{$this->endpoint}/fake_email");
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function test_update(): void
+    {
+        $user = User::factory()->create();
+        $payload = [
+            'name' => 'Update name',
+            'password' => bcrypt('new password'),
+        ];
+
+        $response = $this->putJson("{$this->endpoint}/{$user->email}", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+    }
+
     public static function dataProviderPagination(): array
     {
         return [
