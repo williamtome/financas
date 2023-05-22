@@ -58,6 +58,22 @@ class UserApiTest extends TestCase
         $response->assertJsonStructure($this->structure());
     }
 
+    public function test_find(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->getJson("{$this->endpoint}/{$user->email}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+                'email',
+            ]
+        ]);
+    }
+
     public static function dataProviderPagination(): array
     {
         return [
