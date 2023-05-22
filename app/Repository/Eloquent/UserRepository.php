@@ -49,15 +49,18 @@ class UserRepository implements UserRepositoryInterface
      */
     public function delete(string $email): bool
     {
-        if (!$user = $this->find($email)) {
-            throw new NotFoundException('User not found');
-        }
-
-        return $user->delete();
+        return $this->find($email)->delete();
     }
 
-    public function find(string $email): ?object
+    /**
+     * @throws NotFoundException
+     */
+    public function find(string $email): object
     {
-        return $this->model->where('email', $email)->first();
+        if (!$user = $this->model->where('email', $email)->first()) {
+            throw new NotFoundException('User not found.');
+        }
+
+        return $user;
     }
 }
