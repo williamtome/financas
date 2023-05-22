@@ -73,7 +73,7 @@ class UserRepositoryTest extends TestCase
         $this->repository->create($data);
     }
 
-    public function test_update()
+    public function test_update(): void
     {
         $user = User::factory()->create();
         $data = [
@@ -118,6 +118,7 @@ class UserRepositoryTest extends TestCase
 
     public function test_find_not_found(): void
     {
+        $this->expectException(NotFoundException::class);
         $response = $this->repository->find('fake_email');
 
         $this->assertNull($response);
