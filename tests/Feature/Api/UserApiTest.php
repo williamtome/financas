@@ -90,11 +90,19 @@ class UserApiTest extends TestCase
 
     public function test_not_found(): void
     {
-        $user = User::factory()->create();
+        User::factory()->create();
 
         $response = $this->getJson("{$this->endpoint}/fake_email");
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function test_delete(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->deleteJson("{$this->endpoint}/{$user->email}");
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
 
     public static function dataProviderPagination(): array
