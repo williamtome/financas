@@ -40,6 +40,20 @@ class UserApiTest extends TestCase
     }
 
     /**
+     * @dataProvider dataProviderUpdate
+     */
+    public function test_update(
+        array $payload,
+        int $statusCode
+    ): void {
+        $user = User::factory()->create();
+
+        $response = $this->putJson("{$this->endpoint}/{$user->email}", $payload);
+
+        $response->assertStatus($statusCode);
+    }
+
+    /**
      * @dataProvider dataProviderPagination
      */
     public function test_paginate(
@@ -83,19 +97,6 @@ class UserApiTest extends TestCase
         $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
-    public function test_update(): void
-    {
-        $user = User::factory()->create();
-        $payload = [
-            'name' => 'Update name',
-            'password' => bcrypt('new password'),
-        ];
-
-        $response = $this->putJson("{$this->endpoint}/{$user->email}", $payload);
-
-        $response->assertStatus(Response::HTTP_OK);
-    }
-
     public static function dataProviderPagination(): array
     {
         return [
@@ -105,6 +106,35 @@ class UserApiTest extends TestCase
             '20 users page 1' => ['total' => 20, 'page' => 1, 'totalPage' => 15],
             '20 users page 2' => ['total' => 20, 'page' => 2, 'totalPage' => 5],
             'no users' => ['total' => 0, 'page' => 1, 'totalPage' => 0],
+        ];
+    }
+
+    public static function dataProviderUpdate(): array
+    {
+        return [
+            'update ok' => [
+                'payload' => [
+                    'name' => 'Update name',
+                    'password' => 'new password',
+                ],
+                'statusCode' => Response::HTTP_OK,
+            ],
+            'update without password' => [
+                'payload' => [
+                    'name' => 'New Name',
+                ],
+                'statusCode' => Response::HTTP_OK,
+            ],
+            'update without name' => [
+                'payload' => [
+                    'password' => 'new password',
+                ],
+                'statusCode' => Response::HTTP_UNPROCESSABLE_ENTITY,
+            ],
+            'update empty payload' => [
+                'payload' => [],
+                'statusCode' => Response::HTTP_UNPROCESSABLE_ENTITY,
+            ],
         ];
     }
 
