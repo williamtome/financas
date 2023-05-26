@@ -9,6 +9,7 @@ use App\Repository\Contracts\UserRepositoryInterface;
 use App\Repository\Eloquent\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
@@ -54,5 +55,12 @@ class UserController extends Controller
         $user = $this->repository->update($email, $request->all());
 
         return new UserResource($user);
+    }
+
+    public function destroy(string $email): Response
+    {
+        $this->repository->delete($email);
+
+        return response()->noContent();
     }
 }
