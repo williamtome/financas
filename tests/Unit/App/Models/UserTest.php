@@ -3,6 +3,7 @@
 namespace Tests\Unit\App\Models;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -19,6 +20,7 @@ class UserTest extends ModelTestCase
     protected function traits(): array
     {
         return [
+            HasUuids::class,
             HasApiTokens::class,
             HasFactory::class,
             Notifiable::class,
