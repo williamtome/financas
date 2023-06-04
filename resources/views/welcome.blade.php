@@ -20,11 +20,14 @@
             <h1>Curso Vue 3</h1>
             <p>@{{ name }} @{{ lastName }}</p>
 
-            <img v-bind:src="film.image" v-bind:alt="film.title" style="max-width: 100px;">
-            <strong v-show="film.stars > 0">@{{ film.stars }}</strong>
-
-            <img :src="film2.image" :alt="film2.title" style="max-width: 100px;">
-            <strong v-if="film2.stars > 0">@{{ film2.stars }}</strong>
+            <ul>
+                <li v-for="(film, index) in films" :key="index">
+                    <p>@{{ film.title }}</p>
+                    <img v-bind:src="film.image" v-bind:alt="film.title" style="max-width: 100px;">
+                    <strong v-if="film.stars > 0">@{{ film.stars }}</strong>
+                    <strong v-else>Não há estrelas.</strong>
+                </li>
+            </ul>
         </div>
 
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -34,18 +37,20 @@
                     return {
                         name: 'William',
                         lastName: 'Tomé - WTECH',
-                        film: {
-                            title: 'Filme 01',
-                            description: 'Filme muito bom',
-                            image: "{{ asset('images/avengers.jpeg') }}",
-                            stars: 5
-                        },
-                        film2: {
-                            title: 'Filme 02',
-                            description: 'Filme muito bom (2)',
-                            image: "{{ asset('images/avengers2.jpeg') }}",
-                            stars: 0
-                        }
+                        films: [
+                            {
+                                title: 'Filme 01',
+                                description: 'Filme muito bom',
+                                image: "{{ asset('images/avengers.jpeg') }}",
+                                stars: 5
+                            },
+                            {
+                                title: 'Filme 02',
+                                description: 'Filme muito bom (2)',
+                                image: "{{ asset('images/avengers2.jpeg') }}",
+                                stars: 0
+                            }
+                        ]
                     }
                 }
             }
