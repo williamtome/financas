@@ -17,8 +17,11 @@
     </head>
     <body class="antialiased">
         <div id="app">
-            <h1>Curso Vue 3</h1>
+            <h1>@{{ title }}</h1>
             <p>@{{ name }} @{{ lastName }}</p>
+            <hr>
+
+            <h2 class="font-semibold">Carrinho: (@{{ cart.length }})</h2>
 
             <ul>
                 <li v-for="(film, index) in films" :key="index">
@@ -26,6 +29,10 @@
                     <img v-bind:src="film.image" v-bind:alt="film.title" style="max-width: 100px;">
                     <strong v-if="film.stars > 0">@{{ film.stars }}</strong>
                     <strong v-else>Não há estrelas.</strong>
+                    <br>
+                    <a href="#" v-on:click.prevent="addCart(film)">ADD CART</a>
+                    <br>
+                    <hr>
                 </li>
             </ul>
         </div>
@@ -35,8 +42,10 @@
             const app = {
                 data() {
                     return {
+                        title: 'Curso Vue 3',
                         name: 'William',
                         lastName: 'Tomé - WTECH',
+                        cart: [],
                         films: [
                             {
                                 title: 'Filme 01',
@@ -51,6 +60,11 @@
                                 stars: 0
                             }
                         ]
+                    }
+                },
+                methods: {
+                    addCart(film) {
+                        this.cart.push(film)
                     }
                 }
             }
