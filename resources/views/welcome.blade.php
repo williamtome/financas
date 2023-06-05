@@ -17,37 +17,48 @@
     </head>
     <body class="antialiased">
         <div id="app">
-            <h1>@{{ title }}</h1>
-            <p>@{{ name }} @{{ lastName }}</p>
-            <hr>
+            <div :style="styles">
+                <label for="themeBlack">
+                    <input
+                        type="checkbox"
+                        :checked="themeBlack"
+                        @click="toggleTheme"
+                        name="themeBlack"
+                    > Tema Escuro
+                </label>
+                <br><br>
+                <h1>@{{ title }}</h1>
+                <p>@{{ fullname }}</p>
+                <hr>
 
-            <h2 class="font-semibold">Carrinho: (@{{ cart.length }})</h2>
+                <h2 class="font-semibold">Carrinho: (@{{ cart.length }})</h2>
 
-            <ul>
-                <li v-for="(film, index) in films" :key="index">
-                    <p>@{{ film.title }}</p>
-                    <img v-bind:src="film.image" v-bind:alt="film.title" style="max-width: 100px;">
-                    <strong v-if="film.stars > 0">@{{ film.stars }}</strong>
-                    <strong v-else>Não há estrelas.</strong>
-                    <br>
-                    <a
-                        href="#"
-                        v-on:click.prevent="removeCart(film)"
-                        v-if="inCart(film)"
-                    >
-                        REMOVE CART
-                    </a>
-                    <a
-                        href="#"
-                        v-on:click.prevent="addCart(film)"
-                        v-else
-                    >
-                        ADD CART
-                    </a>
-                    <br>
-                    <hr>
-                </li>
-            </ul>
+                <ul>
+                    <li v-for="(film, index) in films" :key="index">
+                        <p>@{{ film.title }}</p>
+                        <img v-bind:src="film.image" v-bind:alt="film.title" style="max-width: 100px;">
+                        <strong v-if="film.stars > 0">@{{ film.stars }}</strong>
+                        <strong v-else>Não há estrelas.</strong>
+                        <br>
+                        <a
+                            href="#"
+                            v-on:click.prevent="removeCart(film)"
+                            v-if="inCart(film)"
+                        >
+                            REMOVE CART
+                        </a>
+                        <a
+                            href="#"
+                            v-on:click.prevent="addCart(film)"
+                            v-else
+                        >
+                            ADD CART
+                        </a>
+                        <br>
+                        <hr>
+                    </li>
+                </ul>
+            </div>
         </div>
 
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -72,7 +83,18 @@
                                 image: "{{ asset('images/avengers2.jpeg') }}",
                                 stars: 0
                             }
-                        ]
+                        ],
+                        styles: {
+                            backgroundColor: '#000',
+                            color: '#fff'
+                        },
+                        themeBlack: true,
+                    }
+                },
+
+                computed: {
+                    fullname() {
+                        return this.name + ' ' + this.lastName
                     }
                 },
 
@@ -85,6 +107,17 @@
                     },
                     removeCart(film) {
                         this.cart = this.cart.filter(f => film != f)
+                    },
+                    toggleTheme() {
+                        this.themeBlack = !this.themeBlack
+
+                        if (this.themeBlack) {
+                            this.styles.backgroundColor = '#000'
+                            this.styles.color = '#fff'
+                        } else {
+                            this.styles.backgroundColor = '#fff'
+                            this.styles.color = '#000'
+                        }
                     }
                 }
             }
