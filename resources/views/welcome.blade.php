@@ -30,7 +30,20 @@
                     <strong v-if="film.stars > 0">@{{ film.stars }}</strong>
                     <strong v-else>Não há estrelas.</strong>
                     <br>
-                    <a href="#" v-on:click.prevent="addCart(film)">ADD CART</a>
+                    <a
+                        href="#"
+                        v-on:click.prevent="removeCart(film)"
+                        v-if="inCart(film)"
+                    >
+                        REMOVE CART
+                    </a>
+                    <a
+                        href="#"
+                        v-on:click.prevent="addCart(film)"
+                        v-else
+                    >
+                        ADD CART
+                    </a>
                     <br>
                     <hr>
                 </li>
@@ -62,9 +75,16 @@
                         ]
                     }
                 },
+
                 methods: {
                     addCart(film) {
                         this.cart.push(film)
+                    },
+                    inCart(film) {
+                        return this.cart.indexOf(film) != -1;
+                    },
+                    removeCart(film) {
+                        this.cart = this.cart.filter(f => film != f)
                     }
                 }
             }
